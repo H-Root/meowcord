@@ -1,59 +1,50 @@
 import {
-	Sidebar,
-	SidebarContent,
-	SidebarGroup,
-	SidebarGroupContent,
-	SidebarMenu,
+  Sidebar,
+  SidebarContent,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarHeader,
+  SidebarMenu,
+  SidebarMenuItem,
+  SidebarSeparator,
 } from "@/components/ui/sidebar";
-import UserSidebarItem from "./user-sidebar-item";
 
-const items = [
-	{
-		title: "Home",
-		url: "#",
-		avatar: "https://github.com/shadcn.png",
-		initials: "CN",
-	},
-	{
-		title: "Inbox",
-		url: "#",
-		avatar: "https://github.com/shadcn.png",
-		initials: "CN",
-	},
-	{
-		title: "Calendar",
-		url: "#",
-		avatar: "https://github.com/shadcn.png",
-		initials: "CN",
-	},
-	{
-		title: "Search",
-		url: "#",
-		avatar: "https://github.com/shadcn.png",
-		initials: "CN",
-	},
-	{
-		title: "Settings",
-		url: "#",
-		avatar: "https://github.com/shadcn.png",
-		initials: "CN",
-	},
-];
+import UserSidebarItem from "./user-sidebar-item";
+import CommandDialogDemo from "./CommandDialogDemo";
+import SideBarFooterSection from "./sideBarFooterSection";
+import data from "@/db.json";
+const items = data
+  .map((d) => {
+    const initials = d.first_name.charAt(0) + d.last_name.charAt(0);
+    const url = `/${d.id}`;
+    const item = { ...d, url: url, initials: initials };
+    return item;
+  })
+  .filter((t) => t.status !== "pending");
 
 export function AppSidebar() {
-	return (
-		<Sidebar>
-			<SidebarContent>
-				<SidebarGroup>
-					<SidebarGroupContent>
-						<SidebarMenu>
-							{items.map((item) => (
-								<UserSidebarItem key={item.title} {...item} />
-							))}
-						</SidebarMenu>
-					</SidebarGroupContent>
-				</SidebarGroup>
-			</SidebarContent>
-		</Sidebar>
-	);
+  return (
+    <Sidebar>
+      <SidebarHeader>
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <CommandDialogDemo items={items} />
+          </SidebarMenuItem>
+        </SidebarMenu>
+      </SidebarHeader>
+      <SidebarSeparator className="!ml-auto !w-[93%]" />
+      <SidebarContent>
+        <SidebarGroup>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {items.map((item) => (
+                <UserSidebarItem key={item.first_name} {...item} />
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+      </SidebarContent>
+      <SideBarFooterSection />
+    </Sidebar>
+  );
 }
